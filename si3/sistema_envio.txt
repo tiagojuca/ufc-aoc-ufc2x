@@ -1,0 +1,25 @@
+Pessoal,
+
+O sistema de envio de trabalhos já está disponível para testes. O endereço é:
+
+http://200.19.179.122/
+
+Como exercícios, para vocês testarem os trabalhos de vocês e o sistema de envios, aqui vão os quatro programas que devem ser escritos em assembly de seus computadores (lembrando que o envio deve ser feito exatamente nessa ordem):
+
+- Programa 1 (Multiplicação): Programa que, dadas duas entradas x e y, calcula a multiplicação x*y.
+- Programa 2 (Fatorial): Programa que, dada uma entrada x, calcula o fatorial de x;
+- Programa 3 (Fibonacci): Programa que, dada uma entrada x, calcula o "x-ésimo" número na sequência de Fibonacci;
+
+- Programa 4 (Maior que): Programa que, dadas duas entradas x e y, retorna 0 se x <= y ou 1 se x > y.
+
+ 
+
+ATENÇÃO!! NÃO É MAIS PERMITIDO NO CÓDIGO DO PROCESSADOR:
+
+- O uso de laços python (for / while);
+- O uso dos operadores aritméticos *, / e %
+- O uso dos operadores relacionais >, <, >=, <=, != e ==/
+
+
+Até mais,
+Yuri Lenon
