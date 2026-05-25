@@ -14,6 +14,4 @@ def start(devs, auto = True):
       else:
          break
 
-   print("ticks:  ", ticks)
-
    return ticks
