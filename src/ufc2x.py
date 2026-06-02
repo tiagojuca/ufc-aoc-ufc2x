@@ -24,54 +24,36 @@ firmware = array('L',[0]) * 512
 #MICROPROGRAMA:
 
 #0: INIT
-firmware[0] = 0b000000000_100_00110101_001000_001_001 
-              #BUS_C = PC + 1; PC = BUS_C; MBR = memoria.read_byte(PC) (FETCH); GOTO MBR.
+firmware[0] = 0b000000000_100_00110101_001000_001_101_001 #BUS_C = PC + 1; PC = BUS_C; MBR = memoria.read_byte(PC) (FETCH); GOTO MBR.
               
 #2: X = X + mem[address]
-firmware[2] = 0b000000011_000_00110101_001000_001_001
-              #PC = PC + 1; MBR = memoria.read_byte(PC); GOTO 3
-firmware[3] = 0b000000100_000_00010100_100000_010_010
-              #MAR = MBR; MDR = memoria.read_word(MAR); GOTO 4
-firmware[4] = 0b000000101_000_00010100_000001_000_000
-              #H = MDR; GOTO 5
-firmware[5] = 0b000000000_000_00111100_000100_000_011              
-              #X = H + X; GOTO 0
+firmware[2] = 0b000000011_000_00110101_001000_001_101_001 #PC = PC + 1; MBR = memoria.read_byte(PC); GOTO 3
+firmware[3] = 0b000000100_000_00010100_100000_010_101_010 #MAR = MBR; MDR = memoria.read_word(MAR); GOTO 4
+firmware[4] = 0b000000101_000_00010100_000001_000_101_000 #H = MDR; GOTO 5
+firmware[5] = 0b000000000_000_00111100_000100_000_101_011 #X = H + X; GOTO 0
 
 #6: memoria[address] = X
-firmware[6] = 0b000000111_000_00110101_001000_001_001
-              #PC = PC + 1; FETCH; GOTO 7
-firmware[7] = 0b000001000_000_00010100_100000_000_010
-              #MAR = MBR; GOTO 8
-firmware[8] = 0b000000000_000_00010100_010000_100_011
-              #MDR = X; WRITE_WORD; GOTO 0
+firmware[6] = 0b000000111_000_00110101_001000_001_101_001 #PC = PC + 1; FETCH; GOTO 7
+firmware[7] = 0b000001000_000_00010100_100000_000_101_010 #MAR = MBR; GOTO 8
+firmware[8] = 0b000000000_000_00010100_010000_100_101_011 #MDR = X; WRITE_WORD; GOTO 0
               
 #9: GOTO address
-firmware[9]  = 0b000001010_000_00110101_001000_001_001
-              #PC = PC + 1; FETCH; GOTO 10
-firmware[10] = 0b000000000_100_00010100_001000_001_010
-              #PC = MBR; FETCH; GOTO MBR
+firmware[9]  = 0b000001010_000_00110101_001000_001_101_001 #PC = PC + 1; FETCH; GOTO 10
+firmware[10] = 0b000000000_100_00010100_001000_001_101_010 #PC = MBR; FETCH; GOTO MBR
 
 #11: IF X == 0 GOTO address
-firmware[11] =  0b000001100_001_00010100_000000_000_011
-                #BUS_C = X; IF ALU == 0 GOTO 268 ELSE GOTO 12
-firmware[12] =  0b000000000_000_00110101_001000_000_001
-                #PC = PC + 1; GOTO 0
-firmware[268] = 0b000001001_000_00000000_000000_000_000
-                #GOTO 9
+firmware[11] =  0b000001100_001_00010100_000000_000_101_011 #BUS_C = X; IF ALU == 0 GOTO 268 ELSE GOTO 12
+firmware[12] =  0b000000000_000_00110101_001000_000_101_001 #PC = PC + 1; GOTO 0
+firmware[268] = 0b000001001_000_00000000_000000_000_101_000 #GOTO 9
 
 #13: X = X - mem[address]
-firmware[13] = 0b000001110_000_00110101_001000_001_001
-               #PC <- PC + 1; fetch; goto 14
-firmware[14] = 0b000001111_000_00010100_100000_010_010
-               #MAR <- MBR; read; goto 15
-firmware[15] = 0b000010000_000_00010100_000001_000_000
-               #H <- MDR; goto 16
-firmware[16] = 0b000000000_000_00111111_000100_000_011
-               #X <- X - H; goto 0
+firmware[13] = 0b000001110_000_00110101_001000_001_101_001 #PC <- PC + 1; fetch; goto 14
+firmware[14] = 0b000001111_000_00010100_100000_010_101_010 #MAR <- MBR; read; goto 15
+firmware[15] = 0b000010000_000_00010100_000001_000_101_000 #H <- MDR; goto 16
+firmware[16] = 0b000000000_000_00111111_000100_000_101_011 #X <- X - H; goto 0
 
 #255: HALT
-firmware[255] = 0b000000000_000_00000000_000000_000_000
-                #HALT
+firmware[255] = 0b000000000_000_00000000_000000_000_000_000
 
 
 #1:  SOMA A X O VALOR NO END. 215
@@ -93,21 +75,36 @@ firmware[255] = 0b000000000_000_00000000_000000_000_000
 # memory.write_byte(23, 5) #5
 
 
-def read_regs(reg_num):
+def read_regs(reg_num_a, reg_num_b):
     global MDR, PC, MBR, X, Y, H, BUS_A, BUS_B
     
-    BUS_A = H
+    if reg_num_a == 0:
+       BUS_A = MDR
+    elif reg_num_a == 1:
+       BUS_A = PC
+    elif reg_num_a == 2:
+       BUS_A = MBR
+    elif reg_num_a == 3:
+       BUS_A = X
+    elif reg_num_a == 4:
+       BUS_A = Y
+    elif reg_num_a == 5:
+       BUS_A = H
+    else:
+       BUS_A = 0
     
-    if reg_num == 0:
+    if reg_num_b == 0:
        BUS_B = MDR
-    elif reg_num == 1:
+    elif reg_num_b == 1:
        BUS_B = PC
-    elif reg_num == 2:
+    elif reg_num_b == 2:
        BUS_B = MBR
-    elif reg_num == 3:
+    elif reg_num_b == 3:
        BUS_B = X
-    elif reg_num == 4:
+    elif reg_num_b == 4:
        BUS_B = Y
+    elif reg_num_b == 5:
+       BUS_B = H
     else:
        BUS_B = 0
 
@@ -224,10 +221,10 @@ def step():
    if MIR == 0:
       return False
    
-   read_regs( MIR & 0b000000000_000_00000000_000000_000_111 )
-   alu((MIR & 0b000000000_000_11111111_000000_000_000) >> 12)
-   write_regs( (MIR & 0b000000000_000_00000000_111111_000_000) >> 6)
-   memoria_io( (MIR & 0b000000000_000_00000000_000000_111_000) >> 3 )
-   next_instruction(MIR >> 23, (MIR & 0b000000000_111_00000000_000000_000_000) >> 20)
+   read_regs( (MIR & 0b000000000_000_00000000_000000_000_111_000) >> 3, MIR & 0b000000000_000_00000000_000000_000_000_111 )
+   alu((MIR & 0b000000000_000_11111111_000000_000_000_000) >> 15)
+   write_regs( (MIR & 0b000000000_000_00000000_111111_000_000_000) >> 9)
+   memoria_io( (MIR & 0b000000000_000_00000000_000000_111_000_000) >> 6 )
+   next_instruction(MIR >> 26, (MIR & 0b000000000_111_00000000_000000_000_000_000) >> 23)
    
    return True
